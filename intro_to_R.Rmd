@@ -468,10 +468,6 @@ where:
 
 You can similarly import almost any kind of data file stored in other formats (.xls, .txt, .csv, .dta, .Rdata, .mat, ...)
 
-```{r knit_exit, include=F, echo=F}
-knit_exit()
-```
-
 # Basic Programming
 
 ## Variables
@@ -630,10 +626,38 @@ hello("Mattia")
 ```
 \normalsize
 
+## Exercise
+\scriptsize
+
+We want to build a function called `prices_info` that perform the following operations for a series of asset prices:
+
+* create a vector called `average` by computing the mean for each series
+
+* create a vector called `volatility` by computing the standard deviation for each series
+
+* create a vector called `mu_large` which is `TRUE` if $\mu >= 0$ and `FALSE` $\mu < 0$
+
+* create a vector called `sd_large` which is `TRUE` if $\sigma >= 1$ and `FALSE` $\sigma < 1$ below 0
+
+* create a vector called `both_large` which is `TRUE` only if $\mu >= 0$ and $\sigma >= 1$
+
+* return these five vectors in a list
+
+The asset prices are all random normals numbers and can be generated as follows:
+```{r exercise_control_flows, include=T, echo=T}
+set.seed(0)
+asset_prices <- matrix(data = rnorm(1000), nrow = 10, byrow = T)
+```
+\normalsize
+
+```{r knit_exit, include=F, echo=F}
+knit_exit()
+```
+
 # Working with Data (`tydiverse` library)
 
 ## Tidyverse
-The tidyverse is acollection of R packages designed for data science.
+The tidyverse is a collection of R packages designed for data science.
 
 All packages share an underlying design philosophy, grammar, and data structures.
 
