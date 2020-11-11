@@ -650,10 +650,6 @@ asset_prices <- matrix(data = rnorm(1000), nrow = 10, byrow = T)
 ```
 \normalsize
 
-```{r knit_exit, include=F, echo=F}
-knit_exit()
-```
-
 # Working with Data (`tydiverse` library)
 
 ## Tidyverse
@@ -985,3 +981,6 @@ ggplot(time_series_waste, aes(x = time, y = values, group = geo, col = geo)) +
 ```
 \normalsize
 
+```{r knit_exit, include=F, echo=F}
+knit_exit()
+```
