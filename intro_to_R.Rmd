@@ -924,59 +924,159 @@ Look `?ggplot()`
 
 Cheatsheet here: <https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf>
 
-## Prepare datasets
-
-Reduce to few countries and to one period
+## An empty canvas
 \scriptsize
-```{r waste_cross_section, include=T, echo=T, warning=F, message=F}
-cross_section_waste <- eu_waste %>%
-  select(time, geo, values) %>%
-  filter(time == "2010-01-01") %>%
-  filter(geo %in% c("DE", "ES", "FR", "IT", "NL", "PT")) %>%
-  arrange(geo)
+```{r midwest_scatter0, include=T, echo=T, warning=F, message=F, out.width = "60%", fig.align="center"}
+library(tidyverse)
+data("midwest", package = "ggplot2")
+ggplot(data = midwest, aes(x = area, y = poptotal))
 ```
 \normalsize
 
-Keep all times but reduce to few countries
+## Decide the type of graph (scatter plot)
 \scriptsize
-```{r waste_time_series, include=T, echo=T, warning=F, message=F}
-time_series_waste <- eu_waste %>%
-  select(time, geo, values) %>%
-  filter(geo %in% c("DE", "ES", "FR", "IT", "NL", "PT")) %>%
-  arrange(geo)
+```{r midwest_scatter1, include=T, echo=T, warning=F, message=F, out.width = "60%", fig.align="center"}
+ggplot(data = midwest, aes(x = area, y = poptotal)) +
+  geom_point()
 ```
 \normalsize
 
-<!-- Keep all regions but reduce to one period (remove whole countries as well) -->
-<!-- \scriptsize -->
-<!-- ```{r waste_time_series2, include=T, echo=T, warning=F, message=F} -->
-<!-- geospatial <- eurostat_geodata_60_2016 -->
-<!-- map_waste <- eu_waste %>% -->
-<!--   select(time, geo, values) %>% -->
-<!--   filter(time == "2010-01-01") %>% -->
-<!--   filter(!substr(geo, start = 3, stop = 4) == "") %>% # to remove full countries -->
-<!--   arrange(geo) -->
-<!-- map_waste <- merge(map_waste, geospatial) -->
-<!-- ``` -->
+## Add the OLS regression line
+\scriptsize
+```{r midwest_scatter2, include=T, echo=T, warning=F, message=F, out.width = "60%", fig.align="center"}
+ggplot(data = midwest, aes(x = area, y = poptotal)) +
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
 \normalsize
 
-## Plotting cross-section data
+## Adjust the axis limits
 \scriptsize
-```{r ggplot_barplot, include=T, echo=T, warning=F, message=F, fig.width=10, fig.height=6}
-ggplot(cross_section_waste, aes(x = geo, y = values, group = geo, fill = geo)) +
-  geom_bar(stat = "identity") +
-  ggtitle("Generated waste in selected countries in 2010") +
+```{r midwest_scatter3, include=T, echo=T, warning=F, message=F, out.width = "60%", fig.align="center"}
+ggplot(data = midwest, aes(x = area, y = poptotal)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  coord_cartesian(xlim=c(0,0.1), ylim=c(0, 1000000))
+```
+\normalsize
+
+## Change axis labels and title
+\scriptsize
+```{r midwest_scatter4, include=T, echo=T, warning=F, message=F, out.width = "60%", fig.align="center"}
+ggplot(data = midwest, aes(x = area, y = poptotal)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  coord_cartesian(xlim=c(0,0.1), ylim=c(0, 1000000)) + 
+  ggtitle("Area Vs Population") +
+  xlab("Area") + 
+  ylab("Population")
+```
+\normalsize
+
+## Change colour/size 
+\scriptsize
+```{r midwest_scatter5, include=T, echo=T, warning=F, message=F, out.width = "60%", fig.align="center"}
+ggplot(data = midwest, aes(x = area, y = poptotal)) +
+  geom_point(size = 2, col = "steelblue") + 
+  geom_smooth(method = "lm", col="firebrick") +
+  coord_cartesian(xlim=c(0,0.1), ylim=c(0, 1000000)) + 
+  ggtitle("Area Vs Population") +
+  xlab("Area") + 
+  ylab("Population")
+```
+\normalsize
+
+## Change colour/size to reflect specific categories
+\scriptsize
+```{r midwest_scatter6, include=T, echo=T, warning=F, message=F, out.width = "60%", fig.align="center"}
+ggplot(data = midwest, aes(x = area, y = poptotal)) +
+  geom_point(aes(col = state)) + 
+  geom_smooth(method = "lm") +
+  coord_cartesian(xlim=c(0,0.1), ylim=c(0, 1000000)) + 
+  ggtitle("Area Vs Population") +
+  xlab("Area") + 
+  ylab("Population")
+```
+\normalsize
+
+## Change colour/size to reflect specific categories (plus `color_brewer`)
+\scriptsize
+```{r midwest_scatter7, include=T, echo=T, warning=F, message=F, out.width = "60%", fig.align="center"}
+library(RColorBrewer)
+
+ggplot(data = midwest, aes(x = area, y = poptotal)) +
+  geom_point(aes(col = state)) + 
+  geom_smooth(method = "lm") +
+  coord_cartesian(xlim=c(0,0.1), ylim=c(0, 1000000)) + 
+  ggtitle("Area Vs Population") +
+  xlab("Area") + 
+  ylab("Population") +
+  scale_colour_brewer(palette = "Set1")
+```
+\normalsize
+
+## Change theme
+\scriptsize
+```{r midwest_scatter8, include=T, echo=T, warning=F, message=F, out.width = "60%", fig.align="center"}
+library(RColorBrewer)
+
+ggplot(data = midwest, aes(x = area, y = poptotal)) +
+  geom_point(aes(col = state)) + 
+  geom_smooth(method = "lm") +
+  coord_cartesian(xlim=c(0,0.1), ylim=c(0, 1000000)) + 
+  ggtitle("Area Vs Population") +
+  xlab("Area") + 
+  ylab("Population") +
+  scale_colour_brewer(palette = "Set1") + 
   theme_bw()
 ```
 \normalsize
 
-## Plotting time-series data
+## Grouping and grid
 \scriptsize
-```{r ggplot_timeseries, include=T, echo=T, warning=F, message=F, fig.width=10, fig.height=6}
-ggplot(time_series_waste, aes(x = time, y = values, group = geo, col = geo)) +
-  geom_line() +
-  geom_point() +
-  ggtitle("Generated waste in selected countries over time") +
+```{r midwest_scatter9, include=T, echo=T, warning=F, message=F, out.width = "60%", fig.align="center"}
+ggplot(data = midwest, aes(x = area, y = poptotal)) +
+  geom_point(aes(col = state)) + 
+  geom_smooth(method = "lm") +
+  facet_wrap(state~., nrow = 2) + 
+  coord_cartesian(xlim=c(0,0.1), ylim=c(0, 1000000)) + 
+  ggtitle("Area Vs Population") +
+  xlab("Area") + 
+  ylab("Population") +
+  scale_colour_brewer(palette = "Set1") + 
+  theme_bw() + 
+  theme(legend.position = "none")
+```
+\normalsize
+
+## Prepare dataframe for a column plot
+\scriptsize
+```{r midwest_bar0, include=T, echo=T, warning=F, message=F, out.width = "60%", fig.align="center"}
+midwest_state <- midwest %>% 
+  group_by(state) %>% 
+  summarise(poptotal = sum(poptotal),
+            area = sum(area),
+            popdensity = mean(popdensity),
+            percwhite = mean(percwhite),
+            percblack = mean(percblack),
+            percamerindan = mean(percamerindan),
+            percasian = mean(percasian),
+            percother = mean(percother)) %>% 
+  ungroup()
+
+midwest_state
+```
+\normalsize
+
+## Plot the graph
+\scriptsize
+```{r midwest_bar1, include=T, echo=T, warning=F, message=F, out.width = "60%", fig.align="center"}
+ggplot(data = midwest_state, aes(x = state, y = percasian, 
+                                 col = state, fill = state)) +
+  geom_col(alpha = 0.2) + 
+  geom_point(size = 5) + 
+  scale_colour_brewer(palette = "Set1") + 
+  scale_fill_brewer(palette = "Set1") + 
   theme_bw()
 ```
 \normalsize
