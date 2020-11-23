@@ -3,7 +3,7 @@
 # you find here the commands with some comments
 
 # NOTE: use the data in CSV that I sent you by email
-# beacause it is much simpler than using the excel version.
+# because it is much simpler than using the excel version.
 # Before starting, save the data on your desktop!
 
 # let's load the libraries that we will need
@@ -12,7 +12,13 @@ library(readxl)
 
 
 # then change the directory using the following command
-setwd("~/Desktop/") 
+setwd("~/Documents/GitHub/intro_to_R/data/")
+
+setwd("~/Desktop/")
+getwd()
+
+
+
 # for people using Mac: this command should work fine
 # for people using Windows: you might need to use the following
 # setwd("C://Desktop/") 
@@ -38,11 +44,32 @@ data_waste <- read_csv(file = "env_rwas_gen_1_Data.csv") %>%
 
 
 
+head(data_waste)
 
+  
+  
+data_waste <- data_waste %>% 
+  filter(TIME >= 2006 & TIME <= 2010) %>% 
+  mutate(GEO = as.factor(GEO))
 
-  
-  
-  
-  
-  
-  
+data_waste <- data_waste %>%
+  group_by(GEO) %>% # grouping
+  mutate(tot_values = sum(Value, na.rm = T)) %>%
+  ungroup() %>% # remember to ungroup (to avoid unindented actions) 
+  arrange(GEO, TIME)
+
+sum_data_waste <- data_waste %>% 
+  group_by(GEO) %>%
+  summarise(max = max(Value, na.rm = T),
+            mean = mean(Value, na.rm = T),
+            n = n()) %>% 
+  ungroup()
+
+top3 <- data_waste %>% 
+  filter(TIME == 2009) %>% 
+  top_n(Value, n = 3) %>% 
+  select(GEO, Value)
+
+bottom3 <- data_waste %>% 
+  filter(TIME == 2009) %>% 
+  top_n(Value, n = -3)
